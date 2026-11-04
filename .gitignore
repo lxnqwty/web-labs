@@ -89,3 +89,6 @@ node_modules/
 frontend/node_modules/
 frontend/dist/
 frontend/.vite/
+
+# Локальные настройки API (в Git хранится только .env.example)
+frontend/.env

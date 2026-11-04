@@ -12,3 +12,17 @@
 /* Ошибки клиентской проверки формы ЛР5 */
 .field-error{color:#c94f59!important;font-weight:600;line-height:1.4}
 .field input[aria-invalid="true"],.field textarea[aria-invalid="true"],.field select[aria-invalid="true"]{border-color:#df858b}
+
+
+/* Состояния асинхронной загрузки и отправки ЛР6 */
+.api-state{min-height:210px;padding:34px 20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;color:#526075}
+.api-state strong{font:700 13px Manrope;color:#354156}
+.api-state p{max-width:440px;margin:0 0 5px;color:#8792a3;font-size:10px;line-height:1.6}
+.api-state-error{color:#b44f58}
+.api-state-error strong{color:#b44f58}
+.state-spinner{width:25px;height:25px;border:3px solid #e5eaff;border-top-color:#315be9;border-radius:50%;animation:api-spin .8s linear infinite}
+@keyframes api-spin{to{transform:rotate(360deg)}}
+.mock-switch{display:flex;align-items:flex-start;gap:8px;margin:0 0 14px;color:#8a6a36;font-size:10px;line-height:1.5}
+.mock-switch input{margin:1px 0 0;accent-color:#315be9}
+.api-form-error{margin:0 0 14px;padding:10px 12px;border:1px solid #f1d6d8;border-radius:7px;background:#fff4f4;color:#b44f58;font-size:10px;line-height:1.5}
+.primary:disabled{opacity:.6;cursor:wait;box-shadow:none}
