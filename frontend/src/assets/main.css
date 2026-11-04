@@ -8,3 +8,7 @@
 .user-button{color:inherit;text-decoration:none}
 .action-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
 @media(max-width:720px){.sidebar nav a{height:35px;padding:0 10px;font-size:10px;line-height:35px}.sidebar nav a b{display:none}}
+
+/* Ошибки клиентской проверки формы ЛР5 */
+.field-error{color:#c94f59!important;font-weight:600;line-height:1.4}
+.field input[aria-invalid="true"],.field textarea[aria-invalid="true"],.field select[aria-invalid="true"]{border-color:#df858b}

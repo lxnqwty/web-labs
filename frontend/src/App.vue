@@ -19,7 +19,7 @@ const pageTitle = computed(() => route.meta.title ?? 'Цифровой проф�
         <div v-if="notice" class="notice" role="status"><span>✓</span><p>{{ notice }}</p><button type="button" aria-label="Закрыть" @click="notice = ''">×</button></div>
         <router-view />
       </div>
-      <footer>© 2026 Цифровой профиль студента <span>Учебный проект · Лабораторная работа №4</span></footer>
+      <footer>© 2026 Цифровой профиль студента <span>Учебный проект · Лабораторная работа №5</span></footer>
     </main>
   </div>
 </template>
