@@ -39,7 +39,7 @@ async function request(path, options = {}) {
         ...options.headers,
       },
     })
-  } catch (error) {
+  } catch {
     // Не маскируем сетевой сбой под HTTP 500: у него нет HTTP-статуса.
     throw new ApiError('Нет ответа от сервера.', null)
   }
@@ -69,8 +69,10 @@ export async function createTicket(body) {
     return resolveMock(await mockCreateTicket(body))
   }
 
+  // Учебные флаги имитации ошибок не отправляются на настоящий backend.
+  const { force400, force500, ...payload } = body
   return request('/api/tickets', {
     method: 'POST',
-    body: JSON.stringify(body),
+    body: JSON.stringify(payload),
   })
 }
