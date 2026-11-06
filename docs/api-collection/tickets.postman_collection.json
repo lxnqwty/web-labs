@@ -1,0 +1,112 @@
+{
+  "info": {
+    "_postman_id": "bfaebf80-1a9e-4f5d-9a2a-000000000008",
+    "name": "web-labs — ЛР8 REST tickets",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5000" },
+    { "key": "ticketId", "value": "1" },
+    { "key": "assigneeUserId", "value": "5" }
+  ],
+  "item": [
+    {
+      "name": "POST — создать заявку (201)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Разработка командного веб-проекта\",\n  \"categoryId\": 3,\n  \"description\": \"Создание прототипа цифрового сервиса в рамках проектной деятельности.\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": "{{baseUrl}}/api/tickets"
+      },
+      "event": [{
+        "listen": "test",
+        "script": {
+          "type": "text/javascript",
+          "exec": [
+            "pm.test('201 Created', () => pm.response.to.have.status(201));",
+            "const data = pm.response.json();",
+            "pm.expect(data.status).to.eql('New');",
+            "pm.expect(data.id).to.exist;",
+            "pm.expect(data.number).to.exist;",
+            "pm.collectionVariables.set('ticketId', data.id);"
+          ]
+        }
+      }]
+    },
+    {
+      "name": "POST — короткая тема (400)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"API\",\n  \"categoryId\": 1,\n  \"description\": \"Описание тестовой заявки\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": "{{baseUrl}}/api/tickets"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": ["pm.test('400 Bad Request', () => pm.response.to.have.status(400));"] }
+      }]
+    },
+    {
+      "name": "GET — список заявок (200)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/tickets" },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": ["pm.test('200 OK', () => pm.response.to.have.status(200));", "pm.expect(pm.response.json()).to.be.an('array');"] }
+      }]
+    },
+    {
+      "name": "GET — одна заявка (200)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/tickets/{{ticketId}}" }
+    },
+    {
+      "name": "GET — неизвестный id (404)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/tickets/999999" },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": ["pm.test('404 Not Found', () => pm.response.to.have.status(404));"] }
+      }]
+    },
+    {
+      "name": "PATCH — статус без исполнителя (409)",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"status\": \"InProgress\"\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/api/tickets/{{ticketId}}/status"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": ["pm.test('409 Conflict', () => pm.response.to.have.status(409));"] }
+      }]
+    },
+    {
+      "name": "PATCH — назначить исполнителя (200)",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"assigneeUserId\": {{assigneeUserId}}\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/api/tickets/{{ticketId}}/assignee"
+      }
+    },
+    {
+      "name": "PATCH — перевести в работу (200)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" },
+          { "key": "X-User-Id", "value": "{{assigneeUserId}}" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"status\": \"InProgress\"\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/api/tickets/{{ticketId}}/status"
+      }
+    }
+  ]
+}

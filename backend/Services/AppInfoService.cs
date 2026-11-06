@@ -9,6 +9,6 @@ public sealed class AppInfoService(IHostEnvironment environment) : IAppInfoServi
         return new AppInfoResponse(
             Application: "Student Profile API",
             Environment: environment.EnvironmentName,
-            Version: "ЛР7");
+            Version: "ЛР8");
     }
 }

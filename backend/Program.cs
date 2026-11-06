@@ -2,26 +2,31 @@ using backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Регистрация MVC-контроллеров и сервисов Swagger.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// Сервис приложения регистрируется в DI-контейнере.
 builder.Services.AddSingleton<IAppInfoService, AppInfoService>();
+builder.Services.AddSingleton<TicketService>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Frontend", policy =>
+        policy.WithOrigins("http://localhost:5173", "http://127.0.0.1:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
 
 var app = builder.Build();
 
-// Swagger доступен в режиме разработки.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseCors("Frontend");
 app.MapControllers();
 
-// Служебные маршруты каркаса ЛР7.
 app.MapGet("/health", () => Results.Text("ok"))
     .WithName("Health");
 

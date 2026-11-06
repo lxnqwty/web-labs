@@ -1,7 +1,7 @@
 import { mockCreateTicket, mockGetTickets } from './mockTickets.js'
 
-// Для перехода на настоящий backend достаточно переключить значение на false.
-const USE_MOCK = true
+// Для локальной демонстрации mock можно включить через VITE_USE_MOCK=true.
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
 
 export class ApiError extends Error {
@@ -22,7 +22,10 @@ async function readResponse(response) {
   }
 
   if (!response.ok) {
-    throw new ApiError(data.message || `Ошибка HTTP: ${response.status}`, response.status)
+    throw new ApiError(
+      data.detail || data.title || data.message || `Ошибка HTTP: ${response.status}`,
+      response.status,
+    )
   }
 
   return data
@@ -40,7 +43,6 @@ async function request(path, options = {}) {
       },
     })
   } catch {
-    // Не маскируем сетевой сбой под HTTP 500: у него нет HTTP-статуса.
     throw new ApiError('Нет ответа от сервера.', null)
   }
 
@@ -64,15 +66,33 @@ export async function getTickets() {
   return Array.isArray(data) ? data : data.items
 }
 
+export async function getTicket(id) {
+  return request(`/api/tickets/${id}`)
+}
+
 export async function createTicket(body) {
   if (USE_MOCK) {
     return resolveMock(await mockCreateTicket(body))
   }
 
-  // Учебные флаги имитации ошибок не отправляются на настоящий backend.
   const { force400, force500, ...payload } = body
   return request('/api/tickets', {
     method: 'POST',
     body: JSON.stringify(payload),
+  })
+}
+
+export async function assignTicket(id, assigneeUserId) {
+  return request(`/api/tickets/${id}/assignee`, {
+    method: 'PATCH',
+    body: JSON.stringify({ assigneeUserId }),
+  })
+}
+
+export async function changeTicketStatus(id, status, currentUserId) {
+  return request(`/api/tickets/${id}/status`, {
+    method: 'PATCH',
+    headers: currentUserId ? { 'X-User-Id': String(currentUserId) } : {},
+    body: JSON.stringify({ status }),
   })
 }

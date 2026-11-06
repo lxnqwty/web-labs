@@ -4,9 +4,9 @@
 
 Учебный проект: цифровой профиль студента для учёта учебной, научной и проектной активности.
 
-**Стек:** Vue 3 + Vite + Vue Router (клиент), ASP.NET Core Web API (сервер), PostgreSQL (планируемая БД).
+**Стек:** Vue 3 + Vite + Vue Router (клиент), ASP.NET Core Web API (.NET 8, сервер), PostgreSQL (планируемая БД).
 
-### Запуск frontend
+## Запуск frontend
 
 Требуются Node.js LTS и npm.
 
@@ -16,9 +16,9 @@ npm install
 npm run dev
 ```
 
-Откройте `http://localhost:5173`. Каждый маршрут можно проверить прямым вводом адреса в браузере. Для production-сборки: `npm run build`.
+Откройте `http://localhost:5173`. Для production-сборки: `npm run build`.
 
-### Запуск backend
+## Запуск backend
 
 Требуется .NET SDK 8.0 или новее.
 
@@ -28,17 +28,31 @@ dotnet restore
 dotnet run
 ```
 
-После запуска backend доступен по адресу `http://localhost:5000`.
+Backend доступен по адресу `http://localhost:5000`.
 
-- Swagger: [http://localhost:5000/swagger](http://localhost:5000/swagger) (в режиме Development).
-- Проверка доступности процесса: [http://localhost:5000/health](http://localhost:5000/health).
+- Swagger: [http://localhost:5000/swagger](http://localhost:5000/swagger) (Development).
+- Проверка процесса: [http://localhost:5000/health](http://localhost:5000/health).
 - Информация о приложении: [http://localhost:5000/info](http://localhost:5000/info).
 
-Маршрут `/health` возвращает `200 OK` и короткий ответ `ok`. Он проверяет только то, что процесс запущен и маршрут отвечает. Это **не** проверка создания заявки и не подтверждение готовности CRUD. Создание заявок появится в ЛР8.
+## REST API (ЛР8)
 
-### Ограничения
+| Метод | Путь | Назначение |
+|---|---|---|
+| POST | `/api/tickets` | Создать заявку |
+| GET | `/api/tickets` | Получить список |
+| GET | `/api/tickets/{id}` | Получить одну заявку |
+| PATCH | `/api/tickets/{id}/assignee` | Назначить исполнителя |
+| PATCH | `/api/tickets/{id}/status` | Изменить статус |
 
-В клиентской демонстрационной версии записи пока хранятся в памяти приложения и сбрасываются после перезагрузки страницы. Backend в рамках ЛР7 — только каркас: он пока не реализует создание, чтение или сохранение заявок. Постоянное хранение в PostgreSQL и подключение Vue к API будут добавляться в следующих работах.
+Контракт и примеры: [docs/api-contract.md](docs/api-contract.md). Коллекция Postman: импортируйте [docs/api-collection/tickets.postman_collection.json](docs/api-collection/tickets.postman_collection.json). В коллекции используется базовый URL `http://localhost:5000`.
+
+При переходе в `InProgress` передавайте `X-User-Id`, совпадающий с `assigneeUserId`. Это учебная имитация идентификатора пользователя, не полноценная аутентификация.
+
+Frontend по умолчанию обращается к настоящему backend. Чтобы включить mock-режим, задайте `VITE_USE_MOCK=true` в `frontend/.env`. При необходимости базовый адрес API можно переопределить через `VITE_API_BASE_URL`. CORS настроен для локального Vite-сервера на порту 5173.
+
+## Ограничения
+
+Заявки ЛР8 хранятся в памяти backend и сбрасываются после перезапуска процесса. PostgreSQL и постоянное хранение будут добавлены позднее. Маршрут `/health` проверяет только доступность процесса, а не готовность бизнес-операций.
 
 ## Документация
 
@@ -48,6 +62,7 @@ dotnet run
 - [ЛР5 — форма и список в памяти](docs/reports/lab-05.md)
 - [ЛР6 — клиент API, mock и состояния UI](docs/reports/lab-06.md)
 - [ЛР7 — каркас ASP.NET Core Web API](docs/reports/lab-07.md)
+- [ЛР8 — REST API заявок](docs/reports/lab-08.md)
 - [Модель данных](docs/data-model.md)
 - [Контракт API](docs/api-contract.md)
 - [Архитектура](docs/architecture.md)
