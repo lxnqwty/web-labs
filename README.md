@@ -4,7 +4,7 @@
 
 Учебный проект: цифровой профиль студента для учёта учебной, научной и проектной активности.
 
-**Стек:** Vue 3 + Vite + Vue Router (клиент), ASP.NET Core Web API (.NET 8, сервер), PostgreSQL (планируемая БД).
+**Стек:** Vue 3 + Vite + Vue Router (клиент), ASP.NET Core Web API (.NET 8, сервер), PostgreSQL (SQL-схема и учебные запросы ЛР9).
 
 ## Запуск frontend
 
@@ -34,6 +34,27 @@ Backend доступен по адресу `http://localhost:5000`.
 - Проверка процесса: [http://localhost:5000/health](http://localhost:5000/health).
 - Информация о приложении: [http://localhost:5000/info](http://localhost:5000/info).
 
+## PostgreSQL и SQL (ЛР9)
+
+Требуется установленный PostgreSQL. Создайте отдельную учебную базу и выполните SQL-скрипты из корня репозитория:
+
+```bash
+createdb course_profile
+psql -d course_profile -f db/schema.sql
+psql -d course_profile -f db/seed.sql
+psql -d course_profile -f db/queries.sql
+```
+
+Скрипты можно также выполнять по очереди через Query Tool в pgAdmin.
+
+- `db/schema.sql` создаёт таблицы `users`, `categories`, `activities`, ключи, CHECK-ограничения и индексы. Повторный запуск пересоздаёт таблицы и удаляет их учебные данные.
+- `db/seed.sql` добавляет учебных пользователей, категории и активности во всех четырёх статусах.
+- `db/queries.sql` содержит запросы для фильтрации, сортировки, JOIN и GROUP BY.
+
+Пароль PostgreSQL — тот, который задан при установке PostgreSQL; в README, SQL-файлы и Git его не записывайте. Не используйте рабочую базу: скрипт схемы пересоздаёт таблицы проекта.
+
+**Важно:** ЛР9 демонстрирует PostgreSQL и SQL отдельно от backend. API из ЛР8 пока использует хранилище в памяти; подключение ASP.NET Core к PostgreSQL через EF Core выполняется в ЛР10.
+
 ## REST API (ЛР8)
 
 | Метод | Путь | Назначение |
@@ -52,7 +73,7 @@ Frontend по умолчанию обращается к настоящему ba
 
 ## Ограничения
 
-Заявки ЛР8 хранятся в памяти backend и сбрасываются после перезапуска процесса. PostgreSQL и постоянное хранение будут добавлены позднее. Маршрут `/health` проверяет только доступность процесса, а не готовность бизнес-операций.
+Заявки REST API ЛР8 хранятся в памяти backend и сбрасываются после перезапуска процесса. SQL-схема ЛР9 подготовлена отдельно; приложение пока не использует её. Маршрут `/health` проверяет только доступность процесса, а не готовность бизнес-операций.
 
 ## Документация
 
@@ -63,6 +84,7 @@ Frontend по умолчанию обращается к настоящему ba
 - [ЛР6 — клиент API, mock и состояния UI](docs/reports/lab-06.md)
 - [ЛР7 — каркас ASP.NET Core Web API](docs/reports/lab-07.md)
 - [ЛР8 — REST API заявок](docs/reports/lab-08.md)
+- [ЛР9 — PostgreSQL и SQL](docs/reports/lab-09.md)
 - [Модель данных](docs/data-model.md)
 - [Контракт API](docs/api-contract.md)
 - [Архитектура](docs/architecture.md)
